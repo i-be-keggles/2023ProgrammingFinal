@@ -1,5 +1,6 @@
 from graphics import*
 from Rendering import*
+import random as random
 
 
 class Driver:
@@ -11,7 +12,17 @@ class Driver:
     frameRate = 24
     timeToFrame = 0
 
-    TileMap(win)
+    map = TileMap(win)
+
+    def __init__(self):
+        for x in range(self.map.width):
+            for y in range(self.map.height):
+                s = ""
+                if random.random() > 0.3:
+                    s = "StoneBrickTile"
+                else:
+                    s = "DirtTile"
+                self.map.setTile(x , y, s)
 
     def main(self):
         while self.win.isOpen():
@@ -21,10 +32,12 @@ class Driver:
 
             if self.timeToFrame <= 0:
                 self.timeToFrame = 1 / self.frameRate
-                update()
+                self.update()
+                self.s.move(Point(1, 0))
 
     def update(self):
         self.s.Update()
         # win.redraw()
 
-    main()
+
+Driver().main()

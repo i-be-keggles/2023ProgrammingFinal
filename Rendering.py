@@ -12,13 +12,16 @@ class Sprite:
     source = "Assets/Sprites/"
     frames = []
     frame = 0
-    position = Point(0,0)
+    position = Point(0, 0)
     win = None
 
     def __init__(self, source, position, graphWin):
         self.source += source
         self.frames = [self.source + "/" + s for s in os.listdir(self.source)]
-        self.image = Image(position, self.frames[0])
+        for x in range(len(self.frames)):
+            self.frames[x] = Image(self.position, self.frames[x])
+            self.frames[x] = scaleImage(self.frames[x], 2)
+        self.image = self.frames[0]
         self.position = position
         self.win = graphWin
         
@@ -31,8 +34,10 @@ class Sprite:
             self.frame += 1
             if self.frame == len(self.frames):
                 self.frame = 0
-            self.image = Image(self.position, self.frames[self.frame])
-            #self.image = scaleImage(self.image, 2)         # breaks it for some reason
+            self.image = self.frames[self.frame]
+
+            p = self.image.getAnchor()
+            self.image.move(self.position.x - p.x, self.position.y - p.y)
             self.image.draw(self.win)
 
     def move(self, d):
@@ -43,12 +48,12 @@ class TileMap:
     """A TileMap is an ordered grid of sprites."""
 
     tileSize = 64   # in pixels
-    width = 10      # in tiles
-    height = 10     # in tiles
+    width = 5      # in tiles
+    height = 5     # in tiles
     map = [[None] * height] * width
     win = None
 
-    def __init__(self, win, tileSize=64, width=5, height=5):
+    def __init__(self, win, tileSize=64, width=width, height=height):
         print(map)
         self.win = win
         self.tileSize = tileSize
@@ -61,12 +66,16 @@ class TileMap:
         self.map[x][y] = scaleImage(self.map[x][y], 2)
         self.map[x][y].draw(self.win)
 
+    def tileToPoint(self, x, y):
+        return Point((x + 0.5) * self.tileSize, (y + 0.5) * self.tileSize)
+
 
 def scaleImage(image, size):
-    """This function takes and returns duplicate scaled by a factor of given size"""
+    """This function takes and returns duplicate scaled by a factor of given size.\nBlack pixels count as alpha=0."""
     scaledImage = Image(image.getAnchor(), image.getWidth()*size, image.getHeight()*size)
     for x in range(scaledImage.getWidth()):
         for y in range(scaledImage.getHeight()):
             c = image.getPixel(int(x/size), int(y/size))
-            scaledImage.setPixel(x, y, color_rgb(c[0], c[1], c[2]) )
+            if c[0] != 0 or c[1] != 0 or c[2] != 0:
+                scaledImage.setPixel(x, y, color_rgb(c[0], c[1], c[2]) )
     return scaledImage

@@ -2,21 +2,24 @@ from graphics import*
 from Rendering import*
 import random as random
 from Player import Player
+from Object import Object
+from array import *
 
 
 class Driver:
     win = GraphWin("Game", TileMap.width * TileMap.tileSize, TileMap.height * TileMap.tileSize)
 
     curTime = time.time()
-    frameRate = 24
+    frameRate = 12
     timeToFrame = 0
 
     map = TileMap(win)
     player = Player(map, win)
 
-    sprites = []
+    objects = [[None]*TileMap.width for i in range(TileMap.height)]
 
-    sprites.append(player.sprite)
+    objects[0][0] = player
+    objects[4][4] = Object("Box", Point(4, 4), map, win, "WoodenCrate")
     #sprites.append(Sprite("TestSprite1", Point(200, 200), win))
 
     def __init__(self):
@@ -27,6 +30,11 @@ class Driver:
                 else:
                     s = "DirtTile"
                 self.map.setTile(x , y, s)
+
+        for x in range(len(self.objects)):
+            for y in range(len(self.objects[x])):
+                if self.objects[x][y] is not None:
+                    self.objects[x][y].driver = self
 
     def main(self):
         while self.win.isOpen():
@@ -50,9 +58,14 @@ class Driver:
                 self.update()
 
     def update(self):
-        for sprite in self.sprites:
-            sprite.Update()
+        for x in range(len(self.objects)):
+            for y in range(len(self.objects[x])):
+                if self.objects[x][y] is not None:
+                    self.objects[x][y].update()
         # win.redraw()
+
+    def spaceFree(self, x, y):
+        return self.objects[x][y] is None
 
 
 Driver().main()

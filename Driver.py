@@ -19,8 +19,7 @@ class Driver:
     objects = [[None]*TileMap.width for i in range(TileMap.height)]
 
     objects[0][0] = player
-    objects[4][4] = Object("Box", Point(4, 4), map, win, "WoodenCrate")
-    #sprites.append(Sprite("TestSprite1", Point(200, 200), win))
+    objects[4][4] = Object("Box", Point(4, 4), map, win, "WoodenCrate", True)
 
     def __init__(self):
         for x in range(self.map.width):
@@ -46,13 +45,13 @@ class Driver:
                 self.timeToFrame = 1 / self.frameRate
 
                 k = self.win.checkKey()
-                if k == "w":
+                if k == "w" or k == "Up":
                     self.player.move(0, -1)
-                elif k == "a":
+                elif k == "a" or k == "Left":
                     self.player.move(-1, 0)
-                elif k == "s":
+                elif k == "s" or k == "Down":
                     self.player.move(0, 1)
-                elif k == "d":
+                elif k == "d" or k == "Right":
                     self.player.move(1, 0)
 
                 self.update()

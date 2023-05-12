@@ -57,7 +57,6 @@ class TileMap:
     win = None
 
     def __init__(self, win, tileSize=64, width=width, height=height):
-        print(map)
         self.win = win
         self.tileSize = tileSize
         self.width = width

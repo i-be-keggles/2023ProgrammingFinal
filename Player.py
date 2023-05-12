@@ -55,7 +55,7 @@ class Player(Object):
 
     def tryPush(self, x, y, dx, dy):
         """Checks and handles player pushing an object."""
-        if not (0 <= x+dx < TileMap.width) or not (0 <= y+dy < TileMap.height) or self.driver.spaceFree(x, y) or not self.driver.objects[x][y].kinematic:
+        if not (0 <= x+dx < TileMap.width) or not (0 <= y+dy < TileMap.height) or self.driver.spaceFree(x, y)  or not self.driver.spaceFree(x+dx, y+dy) or not self.driver.objects[x][y].kinematic:
             return False
         else:
             o = self.driver.objects[x][y]

@@ -3,6 +3,7 @@ from Rendering import*
 import random as random
 from Player import Player
 from Object import Object
+from Laser import Laser
 from array import *
 
 
@@ -20,6 +21,9 @@ class Driver:
 
     objects[0][0] = player
     objects[4][4] = Object("Box", Point(4, 4), map, win, "WoodenCrate", True)
+    objects[3][6] = Object("Box", Point(3, 6), map, win, "WoodenCrate", True)
+    objects[7][4] = Laser("Laser", Point(7, 4), map, win, Point(-1, 0), "Laser")
+    objects[2][7] = Laser("Laser", Point(2, 7), map, win, Point(0, -1), "Laser")
 
     def __init__(self):
         for x in range(self.map.width):
@@ -64,7 +68,7 @@ class Driver:
         # win.redraw()
 
     def spaceFree(self, x, y):
-        return self.objects[x][y] is None
+        return self.objects[int(x)][int(y)] is None
 
 
 Driver().main()

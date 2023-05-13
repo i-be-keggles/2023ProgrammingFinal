@@ -7,24 +7,25 @@ class Laser(Object):
     """Emits a laserbeam that hurts the player"""
 
     spriteDir = "Laserbeam"
-    beam = []
 
     def __init__(self,  name, pos, tMap, win, dir, sprite=None, kinematic=False):
         self.x = int(dir.x)
         self.y = int(dir.y)
+        self.beam = []
         super().__init__(name, pos, tMap, win, sprite, kinematic)
         self.spriteDir += str(np.where(dir.x != 0, "/Horizontal", "/Vertical"))
 
+        for i in range(int(np.where(self.x != 0, np.where(self.x > 0, TileMap.width - self.position.x, self.position.x), np.where(self.y > 0, TileMap.height - self.position.y, self.position.y)))):
+            self.beam.append(Sprite(self.spriteDir, self.tMap.tileToPoint(self.position.x + (i + 1) * self.x, self.position.y + (i + 1) * self.y), self.win))
+            self.curL = i
+
     def update(self):
         super().update()
-        l = np.where(self.x != 0, np.where(self.x > 0, TileMap.width - self.position.x, self.position.x), np.where(self.y > 0, TileMap.height - self.position.y, self.position.y))
-        for i in range(int(l)):
-            if self.driver.spaceFree(self.position.x + (i+1) * self.x, self.position.y + (i+1) * self.y):
-                if len(self.beam) == i:
-                    self.beam.append(Sprite(self.spriteDir, self.tMap.tileToPoint(self.position.x + (i+1) * self.x, self.position.y + (i+1) * self.y), self.win))
+        h = False
+        for i in range(len(self.beam)):
+            if self.driver.spaceFree(self.position.x + (i+1) * self.x, self.position.y + (i+1) * self.y) and not h:
                 self.beam[i].update()
+                self.curL = i
             else:
-                for x in range(len(self.beam) - 1, i-1, -1):
-                    self.beam[i].undraw()
-                    self.beam.remove(self.beam[i])
-                break
+                h = True
+                self.beam[i].undraw()

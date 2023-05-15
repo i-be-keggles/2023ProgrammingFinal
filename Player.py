@@ -7,17 +7,21 @@ from Utility import clamp
 class Player(Object):
     """Player character class."""
 
-    health = 3
-    x, y = 0, 0
     spriteDir = "WizardIdle"
     spriteYOffset = 20
 
-    def __init__(self, tMap, win):
-        super().__init__("Player", Point(0, 0), tMap, win)
+    def __init__(self, x, y, tMap, win):
+        super().__init__("Player", Point(x, y), tMap, win)
+
+        self.health = 3
+        self.x, self.y = x, y
+
         self.map = tMap
         self.sprR = Sprite(self.spriteDir, tMap.tileToPoint(self.x, self.y), win)
         self.sprL = Sprite(self.spriteDir, tMap.tileToPoint(self.x, self.y), win, True)
         self.sprite = self.sprR
+
+        self.inventory = Inventory(self.driver, win)
 
     def update(self):
         self.sprite.update()
@@ -51,7 +55,8 @@ class Player(Object):
             self.die()
 
     def die(self):
-        print("You died.")
+        self.driver.promptBar.displayText("You died!")
+        self.driver.restartLevel()
 
     def tryPush(self, x, y, dx, dy):
         """Checks and handles player pushing an object."""
@@ -61,3 +66,67 @@ class Player(Object):
             o = self.driver.objects[x][y]
             o.move(int(dx), int(dy))
             return True
+
+
+class Inventory:
+    """Class for inventory management."""
+
+    rows = 2
+    columns = 5
+
+    panelDir = "InventoryPanel"
+    slotDir = "InventorySlot"
+    slotSize = 64
+    textMargin = -10
+
+    def __init__(self, driver, win):
+        self.items = []
+        self.slots = [None]*self.rows*self.columns
+        self.text = [None]*self.rows*self.columns
+
+        self.driver = driver
+        self.win = win
+        self.open = False
+
+        p = Point(win.getWidth()/2, win.getHeight()/2)
+        self.panel = Sprite(self.panelDir, p, win)
+        sx = self.columns * self.slotSize
+        sy = self.rows * self.slotSize
+        for x in range(self.columns):
+            for y in range(self.rows):
+                #print(sx, x*self.slotSize)
+                self.slots[x + y*self.columns] = Sprite(self.slotDir, Point(p.x - sx/2 + x*self.slotSize, p.y - sy/2 + y*self.slotSize), win)
+                self.text[x + y*self.columns] = Text(Point(p.x - sx/2 + x*self.slotSize, p.y - sy/2 + y*self.slotSize + self.textMargin), "")
+
+    def update(self):
+        self.panel.update()
+        for i in range(self.columns*self.rows):
+            self.slots[i].update()
+            if i < len(self.items):
+                self.items[i].update()
+                self.text[i].draw(self.win)
+
+    def pickupItem(self, item):
+        if len(self.items) >= self.columns*self.rows:
+            self.driver.promptBar.displayText("Cannot pickup " + item.name + ".\n Inventory full.")
+            return None
+        try:
+            self.driver.items.remove(item)
+        except:
+            pass
+        item.position = self.slots[len(self.items)].position
+        self.items.append(item)
+        self.text[len(self.items)-1].setText(item.name)
+
+    def openInventory(self):
+        self.update()
+        self.open = True
+
+    def closeInventory(self):
+        self.open = False
+        self.panel.undraw()
+        for i in range(self.columns * self.rows):
+            self.slots[i].undraw()
+            if i < len(self.items):
+                self.items[i].undraw()
+                self.text[i].draw(self.win)

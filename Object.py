@@ -7,12 +7,16 @@ class Object:
 
     driver = None
 
-    def __init__(self, name, pos, tMap, win, sprite=None, kinematic=False):
+    crateDescription = "A wooden crate you can push around."
+    laserDescription = "Lightning bolts that will damage you if you touch them.\nYou can block their path by pushing something in the way."
+
+    def __init__(self, name, pos, tMap, win, sprite=None, description="", kinematic=False):
         self.name = name
         self.position = Point(pos.x, pos.y)
         self.tMap = tMap
         self.win = win
         self.kinematic = kinematic
+        self.description = description
 
         if sprite is not None:
             self.sprite = Sprite(sprite, tMap.tileToPoint(pos.x, pos.y), win)
@@ -31,4 +35,33 @@ class Object:
         self.position = Point(x, y)
         self.driver.objects[x][y] = self
         self.sprite.move(Point(dx * TileMap.tileSize, dy * TileMap.tileSize))
-        print(self.name, self.position, self.sprite.position)
+
+    @staticmethod
+    def instantiate(obj):
+        """Spawn in game object"""
+        x, y = int(obj.position.x), int(obj.position.y)
+        if Object.driver.spaceFree(x, y):
+            Object.driver.objects[x][y] = obj
+        else:
+            print("ERROR: Cannot instantiate,", obj, "at", x, y, " — space occupied.")
+
+
+class Item(Object):
+    """Base class for interactable items in game."""
+
+    def __init__(self, name, pos, tMap, win, sprite, description="", pickup=True):
+        super().__init__(name, pos, tMap, win, sprite, description, False)
+        self.pickup = pickup
+
+    def onStep(self):
+        """Base method triggered when player moves onto item"""
+        pass
+
+    @staticmethod
+    def instantiate(item):
+        """Spawn in game item"""
+        x, y = int(item.position.x), int(item.position.y)
+        if Object.driver.itemAt(x, y):
+            Object.driver.items[x][y] = item
+        else:
+            print("ERROR: Cannot instantiate,", item, "at", x, y, " — space occupied.")

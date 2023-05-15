@@ -1,3 +1,5 @@
+import math
+
 from Rendering import *
 from graphics import *
 from Object import Object
@@ -27,5 +29,8 @@ class Laser(Object):
                 self.beam[i].update()
                 self.curL = i
             else:
+                if not h and self.driver.objects[int(self.position.x + (i+1) * self.x)][int(self.position.y + (i+1) * self.y)] == self.driver.player:
+                #if not h and self.driver.player.position == (int(self.position.x + (i+1) * self.x), int(self.position.y + (i+1) * self.y)):
+                    self.driver.player.takeDamage(math.inf)
                 h = True
                 self.beam[i].undraw()

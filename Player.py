@@ -120,6 +120,7 @@ class Inventory:
                 #print(sx, x*self.slotSize)
                 self.slots[x + y*self.columns] = Sprite(self.slotDir, Point(p.x - sx/2 + (x+0.5)*self.slotSize, p.y - sy/2 + (y+0.5)*(self.slotSize + self.yBuffer)), win)
                 self.text[x + y*self.columns] = Text(Point(p.x - sx/2 + (x+0.5)*self.slotSize, p.y - sy/2 + (y+1)*(self.slotSize + self.yBuffer) + self.textMargin), "")
+                self.text[x + y*self.columns].setSize(10)
 
     def update(self):
         """Refreshes graphics."""

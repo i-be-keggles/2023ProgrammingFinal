@@ -64,7 +64,7 @@ class Item(Object):
     potionDescription = "Stops you from dying once."
     keyDescription = "Unlocks a barrier."
     lightningStoneDescription = "Disables a lightning bolt."
-    portalDescription = "Takes you to the next level."
+    portalDescription = "Saves you from dying one time."
     burgerDescription = "It's a burger. May come in handy later."
 
     def __init__(self, name, pos, tMap, win, sprite, description="", pickup=True):

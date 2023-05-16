@@ -34,8 +34,9 @@ class PromptBar:
 
     def update(self):
         """Refreshes graphics."""
+        m = self.win.checkMouse()
         if self.textField is None:
-            if self.win.checkMouse() is not None:
+            if m is not None:
                 if len(self.textStack) == 0:
                     self.text.setText("")
                     self.openField()

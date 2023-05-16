@@ -94,10 +94,10 @@ class Driver:
             return
         for x in range(len(self.objects)):
             for y in range(len(self.objects[x])):
-                if self.objects[x][y] is not None:
-                    self.objects[x][y].update()
                 if self.items[x][y] is not None:
                     self.items[x][y].update()
+                if self.objects[x][y] is not None:
+                    self.objects[x][y].update()
 
     def spaceFree(self, x, y):
         """Checks for object at position."""
@@ -154,7 +154,7 @@ class Driver:
         elif c == "close inventory":
             self.player.inventory.closeInventory()
 
-        elif c == "pick up":
+        elif c == "get":
             if self.player.tryPickup() == False:
                 self.promptBar.displayText("There's nothing there.")
 
@@ -169,13 +169,21 @@ class Driver:
             else:
                 self.promptBar.displayText("There's nothing there.")
 
+        elif len(s) == 2 and s[0] == "view":
+            if self.player.inventory.containsItem(s[1]):
+                for i in self.player.inventory.items:
+                    if i.name.lower() == s[1].lower():
+                        self.promptBar.displayText(i.description)
+            else:
+                self.promptBar.displayText("You don't have a " + s[1] + ".")
+
         elif c == "restart":
             self.restartLevel()
         elif c == "performance":
             self.win.autoflush = not self.win.autoflush
 
         elif c == "help":
-            self.promptBar.displayText("go up/down/left/right, look up/down/left/right, restart, performance, help,\nopen/close inventory, pick up, use [item] up/down/left/right")
+            self.promptBar.displayText("go up/down/left/right, look up/down/left/right, restart, performance, help,\nopen/close inventory, get, use [item] up/down/left/right, view [item]")
         else:
             self.promptBar.displayText("Invalid command.\nUse 'help' for list of commands.")
 

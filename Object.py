@@ -41,7 +41,6 @@ class Object:
 
     def tryUseItem(self, item):
         """Base method triggered when item is used on the object."""
-        print("Using", item, "on", self.name)
         self.driver.promptBar.displayText("Nothing happened.")
         pass
 

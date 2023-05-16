@@ -34,8 +34,11 @@ class GameManager:
         self.cesare.update()
         self.promptBar.displayText(text, True)
 
-    def loadLevel(self, level, rd=True):
+    def loadLevel(self, level, rd=True, keepItems=False):
         """Loads a game level."""
+        items = []
+        if keepItems:
+            items = self.driver.player.inventory.items
         if rd:
             self.driver.restarting = True
             self.driver.__init__()
@@ -70,6 +73,10 @@ class GameManager:
         self.driver.player = levels[level].objects[0]
         self.promptBar = self.driver.promptBar
 
+        if keepItems:
+            for i in items:
+                self.driver.player.inventory.pickupItem(i)
+
         for o in levels[level].objects:
             Object.instantiate(o)
         for i in levels[level].items:
@@ -85,5 +92,4 @@ class GameManager:
     def completeLevel(self):
         """Handles level completion."""
         self.curLevel += 1
-
-        self.loadLevel(self.curLevel)
+        self.loadLevel(self.curLevel, keepItems=True)

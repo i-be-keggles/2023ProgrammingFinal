@@ -106,11 +106,7 @@ class Driver:
         return self.items[int(x)][int(y)] is not None
 
     def restartLevel(self):
-        #self.win.close()
         self.gameManager.loadLevel(self.gameManager.curLevel)
-
-    def newDriver(self, gm):
-        return Driver(gm)
 
     def tryCommand(self, c):
         """Interprets text input."""

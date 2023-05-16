@@ -28,7 +28,7 @@ class PromptBar:
         self.text = Text(Point(win.getWidth()/2, win.getHeight() - self.openY), "")
         self.text.draw(win)
 
-        self.t = Text(Point(self.win.getWidth() - 50, self.win.getHeight() - 10), "enter to continue")
+        self.t = Text(Point(self.win.getWidth() - 55, self.win.getHeight() - 10), "direction text")
         self.t.setSize(8)
         self.textStack = []
 
@@ -46,7 +46,7 @@ class PromptBar:
                         self.openField()
                     else:
                         self.displayText(self.textStack)
-        self.t.setText(np.where(self.textField is None, "click to continue", "'enter' to input"))
+        self.t.setText(np.where(self.textField is None, "click to continue", "press enter to input"))
         self.t.undraw()
         self.t.draw(self.win)
 

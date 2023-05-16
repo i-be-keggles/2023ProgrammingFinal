@@ -139,7 +139,8 @@ class Inventory:
             self.driver.promptBar.displayText("Cannot pickup " + item.name + ".\n Inventory full.")
             return None
 
-        self.driver.items[int(item.position.x)][int(item.position.y)] = None
+        if self.driver.items[int(item.position.x)][int(item.position.y)] == item:
+            self.driver.items[int(item.position.x)][int(item.position.y)] = None
 
         p = self.slots[len(self.items)].position
         item.sprite.position = p
@@ -147,7 +148,6 @@ class Inventory:
         if not self.open:
             item.sprite.undraw()
         self.items.append(item)
-        print(self.items, self.driver.items)
         self.text[len(self.items)-1].setText(item.name)
 
     def removeItem(self, item):

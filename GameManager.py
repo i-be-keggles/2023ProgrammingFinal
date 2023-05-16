@@ -61,7 +61,7 @@ class GameManager:
 
                 Portal("Portal", Point(6, 3), self.driver.map, self.win, "Portal", Item.portalDescription, False)],
 
-                ["Well hello there little traveler,\nyou seem rather alone...", "My name is Cesare!\nWould you care to join my cult?", "No? Have it your way then >:(\nGood luck trying to stop me!"], None),
+                ["Well hello there little traveller,\nyou seem rather alone...", "My name is Cesare!\nWould you care to join my cult?", "No? Have it your way then >:(\nGood luck trying to stop me!"], None),
 
             Level([
                 Player(1, 3, self.driver.map, self.driver, self.win),
@@ -133,6 +133,65 @@ class GameManager:
                 Item("Burger", Point(0, 5), self.driver.map, self.win, "Burger", Item.burgerDescription)],
 
                 ["You've found the portals! Damn acolytes leaving them around.\nNo matter! Let's see how you fare against some lightning!"], None
+            ),
+            Level([
+                Player(1, 0, self.driver.map, self.driver, self.win),
+                Object("Stone", Point(5, 0), self.driver.map, self.win, "Stone", Object.stoneDescription),
+                Object("Stone", Point(2, 2), self.driver.map, self.win, "Stone", Object.stoneDescription),
+                Object("Stone", Point(6, 2), self.driver.map, self.win, "Stone", Object.stoneDescription),
+                Object("Stone", Point(5, 3), self.driver.map, self.win, "Stone", Object.stoneDescription),
+                Object("Stone", Point(2, 7), self.driver.map, self.win, "Stone", Object.stoneDescription),
+                Object("Stone", Point(6, 7), self.driver.map, self.win, "Stone", Object.stoneDescription),
+
+                Object("Box", Point(3, 1), self.driver.map, self.win, "WoodenCrate", Object.crateDescription, True),
+                Object("Box", Point(4, 1), self.driver.map, self.win, "WoodenCrate", Object.crateDescription, True),
+                Object("Box", Point(6, 1), self.driver.map, self.win, "WoodenCrate", Object.crateDescription, True),
+                Object("Box", Point(0, 2), self.driver.map, self.win, "WoodenCrate", Object.crateDescription, True),
+                Object("Box", Point(4, 2), self.driver.map, self.win, "WoodenCrate", Object.crateDescription, True),
+                Object("Box", Point(0, 3), self.driver.map, self.win, "WoodenCrate", Object.crateDescription, True),
+                Object("Box", Point(3, 6), self.driver.map, self.win, "WoodenCrate", Object.crateDescription, True),
+                Object("Box", Point(4, 6), self.driver.map, self.win, "WoodenCrate", Object.crateDescription, True),
+                Object("Box", Point(5, 6), self.driver.map, self.win, "WoodenCrate", Object.crateDescription, True),
+                Lock("Lock", Point(1, 3), self.driver.map, self.win, "Lock", Object.lockDescription),
+                Laser("Laser", Point(7, 4), self.driver.map, self.win, Point(-1, 0), "Laser", Object.laserDescription)], [
+
+                Portal("Portal", Point(5, 1), self.driver.map, self.win, "Portal", Item.portalDescription, False),
+                Item("Key", Point(7, 3), self.driver.map, self.win, "Key", Item.keyDescription),
+                Item("Burger", Point(3, 7), self.driver.map, self.win, "Burger", Item.burgerDescription),
+                Item("Burger", Point(4, 7), self.driver.map, self.win, "Burger", Item.burgerDescription),
+                Item("Burger", Point(5, 7), self.driver.map, self.win, "Burger", Item.burgerDescription)],
+
+                None, "Hint: not everything always has to be used.\n But left over items from previous levels may come in handy now..."
+            ),
+            Level([
+                Player(4, 5, self.driver.map, self.driver, self.win),
+                Object("Stone", Point(2, 1), self.driver.map, self.win, "Stone", Object.stoneDescription),
+                Object("Stone", Point(3, 1), self.driver.map, self.win, "Stone", Object.stoneDescription),
+                Object("Stone", Point(5, 2), self.driver.map, self.win, "Stone", Object.stoneDescription),
+                Object("Stone", Point(0, 4), self.driver.map, self.win, "Stone", Object.stoneDescription),
+                Object("Stone", Point(7, 4), self.driver.map, self.win, "Stone", Object.stoneDescription),
+                Object("Stone", Point(2, 6), self.driver.map, self.win, "Stone", Object.stoneDescription),
+                Object("Stone", Point(5, 6), self.driver.map, self.win, "Stone", Object.stoneDescription),
+
+                Object("Box", Point(2, 0), self.driver.map, self.win, "WoodenCrate", Object.crateDescription, True),
+                Object("Box", Point(4, 3), self.driver.map, self.win, "WoodenCrate", Object.crateDescription, True),
+                Object("Box", Point(2, 5), self.driver.map, self.win, "WoodenCrate", Object.crateDescription, True),
+                Lock("Lock", Point(4, 1), self.driver.map, self.win, "Lock", Object.lockDescription),
+                Lock("Lock", Point(0, 5), self.driver.map, self.win, "Lock", Object.lockDescription),
+                Laser("Laser", Point(6, 7), self.driver.map, self.win, Point(0, -1), "Laser", Object.laserDescription),
+                Laser("Laser", Point(1, 7), self.driver.map, self.win, Point(0, -1), "Laser", Object.laserDescription)],
+                [
+
+                    Portal("Portal", Point(0, 7), self.driver.map, self.win, "Portal", Item.portalDescription, False),
+                    Portal("Portal", Point(7, 7), self.driver.map, self.win, "Portal", Item.portalDescription, False),
+                    Item("Key", Point(3, 7), self.driver.map, self.win, "Key", Item.keyDescription),
+                    Item("Burger", Point(5, 0), self.driver.map, self.win, "Burger", Item.burgerDescription),
+                    Item("Burger", Point(0, 1), self.driver.map, self.win, "Burger", Item.burgerDescription),
+                    Item("Burger", Point(7, 1), self.driver.map, self.win, "Burger", Item.burgerDescription),
+                    Item("Burger", Point(7, 5), self.driver.map, self.win, "Burger", Item.burgerDescription),
+                    Item("LightningStone", Point(3, 2), self.driver.map, self.win, "LightningStone", Item.lightningStoneDescription)],
+
+                ["No! Stop stealing my burgers!\n I need those for my summoning ritual!", "Why do you keep pushing?\nYou must underestimate my genius.", "Let's see how you handle my traps!\n Which portal can you take, traveller?"], None
             )
         ]
 
@@ -182,4 +241,4 @@ class GameManager:
 
         self.cesare.move(Point(60, 0))
 
-        self.narrate(["Oh you would wouldn't you. You would! I knew-\nI knew you'd pull something like this since I woke up this morning.", "Well you have my little monster. And my burgers!\n OH I'LL GET YOU FOR THIS TRAVELERRRRRRRR (but next time)."])
+        self.narrate(["Oh you would wouldn't you. You would! I knew-\nI knew you'd pull something like this since I woke up this morning.", "Well you have all my burgers!\n OH I'LL GET YOU FOR THIS TRAVELLERRRRRRRR (next time tho)."])

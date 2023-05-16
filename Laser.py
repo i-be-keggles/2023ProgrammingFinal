@@ -1,12 +1,12 @@
 import math
-
 from Rendering import *
 from graphics import *
 from Object import Object
 import numpy as np
 
+
 class Laser(Object):
-    """Emits a laserbeam that hurts the player"""
+    """Emits a laserbeam that hurts the player."""
 
     spriteDir = "Laserbeam"
 
@@ -22,6 +22,7 @@ class Laser(Object):
             self.curL = i
 
     def update(self):
+        """Refreshes graphics."""
         super().update()
         h = False
         for i in range(len(self.beam)):
@@ -34,3 +35,14 @@ class Laser(Object):
                     self.driver.player.takeDamage(math.inf)
                 h = True
                 self.beam[i].undraw()
+
+    def tryUseItem(self, item):
+        """LightningStones turn laser off."""
+        if item.lower() == "lightningstone":
+            for i in self.beam:
+                i.undraw()
+            self.beam = []
+            self.driver.player.inventory.removeItem(item.lower())
+            self.driver.promptBar.displayText("Disabled lightning bolt.")
+        else:
+            super().tryUseItem(item)

@@ -7,8 +7,9 @@ class Object:
 
     driver = None
 
-    crateDescription = "A wooden crate you can push around."
+    crateDescription = "A wooden crate. Try pushing it around!"
     laserDescription = "Lightning bolts that will damage you if you touch them.\nYou can block their path by pushing something in the way."
+    lockDescription = "It's locked. Maybe a key would open this..."
 
     def __init__(self, name, pos, tMap, win, sprite=None, description="", kinematic=False):
         self.name = name
@@ -24,6 +25,7 @@ class Object:
             self.sprite = None
 
     def update(self):
+        """Refreshes graphics."""
         if self.sprite is not None:
             self.sprite.update()
 
@@ -35,6 +37,16 @@ class Object:
         self.position = Point(x, y)
         self.driver.objects[x][y] = self
         self.sprite.move(Point(dx * TileMap.tileSize, dy * TileMap.tileSize))
+
+    def tryUseItem(self, item):
+        """Base method triggered when item is used on the object."""
+        print("Using", item, "on", self.name)
+        self.driver.promptBar.displayText("Nothing happened.")
+        pass
+
+    def destroy(self):
+        self.driver.objects[int(self.position.x)][int(self.position.y)] = None
+        self.sprite.undraw()
 
     @staticmethod
     def instantiate(obj):
@@ -61,7 +73,7 @@ class Item(Object):
     def instantiate(item):
         """Spawn in game item"""
         x, y = int(item.position.x), int(item.position.y)
-        if Object.driver.itemAt(x, y):
+        if not Object.driver.itemAt(x, y):
             Object.driver.items[x][y] = item
         else:
             print("ERROR: Cannot instantiate,", item, "at", x, y, " — space occupied.")

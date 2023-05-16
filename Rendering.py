@@ -26,6 +26,7 @@ class Sprite:
         self.win = graphWin
         
     def update(self):
+        """Refreshes graphics."""
         d = self.image.getAnchor()
         self.image.move(d.x - self.position.x, d.y - self.position.y)
 
@@ -41,6 +42,7 @@ class Sprite:
             self.image.draw(self.win)
 
     def move(self, d):
+        """Moves sprite."""
         self.position = Point(self.position.x + d.x, self.position.y + d.y)
 
     def undraw(self):
@@ -69,6 +71,7 @@ class TileMap:
         self.map[x][y].draw(self.win)
 
     def tileToPoint(self, x, y):
+        """Converts tile position to point on screen."""
         return Point((x + 0.5) * self.tileSize, (y + 0.5) * self.tileSize)
 
 

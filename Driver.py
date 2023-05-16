@@ -4,12 +4,15 @@ import random as random
 from Player import Player
 from Object import *
 from Laser import Laser
+from Lock import Lock
 from Utility import PromptBar
+import numpy as np
 #from pyglet import font
-
 #font.add_file("Assets/pixel.tff")
 
+
 class Driver:
+    """Base class that runs the game."""
     win = GraphWin("Game", TileMap.width * TileMap.tileSize, (TileMap.height + 1) * TileMap.tileSize)
 
     curTime = time.time()
@@ -24,7 +27,7 @@ class Driver:
 
     def __init__(self):
         self.map = TileMap(self.win)
-        self.player = Player(4, 0, self.map, self.win)
+        self.player = Player(4, 0, self.map, self, self.win)
 
         self.objects = [[None] * TileMap.width for i in range(TileMap.height)]
         self.items = [[None] * TileMap.width for i in range(TileMap.height)]
@@ -49,8 +52,13 @@ class Driver:
         Object.instantiate(Object("Box", Point(3, 6), self.map, self.win, "WoodenCrate", Object.crateDescription, True))
         Object.instantiate(Laser("Laser", Point(7, 4), self.map, self.win, Point(-1, 0), "Laser", Object.laserDescription))
         Object.instantiate(Laser("Laser", Point(2, 7), self.map, self.win, Point(0, -1), "Laser", Object.laserDescription))
+        Object.instantiate(Lock("Lock", Point(0, 3), self.map, self.win, "Lock", Object.lockDescription))
 
-        self.player.inventory.pickupItem(Item("Burger", Point(0,0), self.map, self.win, "Burger", "It's a burger."))
+        Item.instantiate(Item("Potion", Point(0, 0), self.map, self.win, "Potion", "Stops you from dying once."))
+        Item.instantiate(Item("Key", Point(5, 6), self.map, self.win, "Key", "Unlocks a barrier."))
+        Item.instantiate(Item("LightningStone", Point(7, 2), self.map, self.win, "LightningStone", "Disables a lightning bolt"))
+
+        #self.player.inventory.pickupItem(Item("Burger", Point(0,0), self.map, self.win, "Burger", "It's a burger."))
 
         self.promptBar = PromptBar(self, self.win)
         self.promptBar.displayText("Don't touch the lasers!")
@@ -58,6 +66,7 @@ class Driver:
         self.main()
 
     def main(self):
+        """Handles main input loop."""
         while self.win.isOpen():
             deltaTime = time.time() - self.curTime
             self.curTime = time.time()
@@ -87,29 +96,36 @@ class Driver:
                 self.update()
 
     def update(self):
+        """Refreshes graphics."""
         if self.player.inventory.open:
             return
         for x in range(len(self.objects)):
             for y in range(len(self.objects[x])):
                 if self.objects[x][y] is not None:
                     self.objects[x][y].update()
+                if self.items[x][y] is not None:
+                    self.items[x][y].update()
 
     def spaceFree(self, x, y):
+        """Checks for object at position."""
         if not (0 <= x < self.map.width) or not (0 <= y < self.map.height):
             return None
         return self.objects[int(x)][int(y)] is None
 
     def itemAt(self, x, y):
+        """Checks for item at position."""
         if not (0 <= x < self.map.width) or not (0 <= y < self.map.height):
             return None
-        return self.items[int(x)][int(y)] is None
+        return self.items[int(x)][int(y)] is not None
 
     def restartLevel(self):
         #self.win.close()
         Driver()
 
     def tryCommand(self, c):
-        x,y = self.player.x, self.player.y
+        """Interprets text input."""
+        x, y = self.player.x, self.player.y
+        s = c.split(" ")
 
         if c == "go up" or c == "go north" or c == "up":
             self.player.move(0, -1)
@@ -143,6 +159,23 @@ class Driver:
 
         elif c == "open inventory":
             self.player.inventory.openInventory()
+        elif c == "close inventory":
+            self.player.inventory.closeInventory()
+
+        elif c == "pick up":
+            if self.player.tryPickup() == False:
+                self.promptBar.displayText("There's nothing there.")
+
+        elif len(s) == 3 and s[0] == "use" and (s[2] == "up" or s[2] == "down" or s[2] == "left" or s[2] == "right"):
+            self.player.inventory.closeInventory()
+            x, y = x + np.where(s[2] == "right", 1, np.where(s[2] == "left", -1, 0)), y + np.where(s[2] == "down", 1, np.where(s[2] == "up", -1, 0))
+            if self.spaceFree(x,y) == False:
+                if self.player.inventory.containsItem(s[1]):
+                    self.objects[x][y].tryUseItem(s[1])
+                else:
+                    self.promptBar.displayText("You don't have a " + s[1] + ".")
+            else:
+                self.promptBar.displayText("There's nothing there.")
 
         elif c == "restart":
             self.restartLevel()
@@ -150,7 +183,7 @@ class Driver:
             self.win.autoflush = not self.win.autoflush
 
         elif c == "help":
-            self.promptBar.displayText("go up/down/left/right, look up/down/left/right, restart, performance, help")
+            self.promptBar.displayText("go up/down/left/right, look up/down/left/right, restart, performance, help,\nopen/close inventory, pick up, use [item] up/down/left/right")
         else:
             self.promptBar.displayText("Invalid command.\nUse 'help' for list of commands.")
 

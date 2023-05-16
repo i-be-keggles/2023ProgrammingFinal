@@ -32,7 +32,7 @@ class PromptBar:
     def update(self):
         if self.textField is None and self.win.checkMouse() is not None:
             self.text.setText("")
-            self.t.undraw()
+            self.t.setText("")
             self.openField()
 
     def getCommand(self):
@@ -56,4 +56,4 @@ class PromptBar:
             self.closeField()
 
         self.text.setText(text)
-        self.t.draw(self.win)
+        self.t.setText("click to continue")

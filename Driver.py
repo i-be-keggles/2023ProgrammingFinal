@@ -82,9 +82,15 @@ class Driver:
 
                 self.promptBar.update()
 
+        while len(self.promptBar.textStack) > 0:
+            self.promptBar.update()
+        self.gameManager.update()
+        self.promptBar.displayText("Congratulations on beating the game.\nClick to exit")
+        self.win.getMouse()
+
     def update(self):
         """Refreshes graphics."""
-        if self.player.inventory.open:
+        if self.player is None or self.player.inventory.open:
             return
         for x in range(len(self.objects)):
             for y in range(len(self.objects[x])):

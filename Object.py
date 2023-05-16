@@ -7,7 +7,7 @@ class Object:
 
     driver = None
 
-    crateDescription = "A wooden crate. Try pushing it around!"
+    crateDescription = "A wooden crate. Smells like burgers."
     laserDescription = "Lightning bolts that will damage you if you touch them.\nYou can block their path by pushing something in the way."
     lockDescription = "It's locked. Maybe a key would open this..."
     stoneDescription = "A solid stone wall."
@@ -60,6 +60,12 @@ class Object:
 
 class Item(Object):
     """Base class for interactable items in game."""
+
+    potionDescription = "Stops you from dying once."
+    keyDescription = "Unlocks a barrier."
+    lightningStoneDescription = "Disables a lightning bolt."
+    portalDescription = "Takes you to the next level."
+    burgerDescription = "It's a burger. May come in handy later."
 
     def __init__(self, name, pos, tMap, win, sprite, description="", pickup=True):
         super().__init__(name, pos, tMap, win, sprite, description, False)

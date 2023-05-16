@@ -11,7 +11,7 @@ class Lock(Object):
     spriteDir = "Lock"
 
     def tryUseItem(self, item):
-        """Keys delete this object,"""
+        """Keys delete this object."""
         if item.lower() == "key":
             self.driver.player.inventory.removeItem(item.lower())
             self.driver.promptBar.displayText("Opened.")

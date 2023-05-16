@@ -10,6 +10,7 @@ class Object:
     crateDescription = "A wooden crate. Try pushing it around!"
     laserDescription = "Lightning bolts that will damage you if you touch them.\nYou can block their path by pushing something in the way."
     lockDescription = "It's locked. Maybe a key would open this..."
+    stoneDescription = "A solid stone wall."
 
     def __init__(self, name, pos, tMap, win, sprite=None, description="", kinematic=False):
         self.name = name

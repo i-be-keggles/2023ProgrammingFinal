@@ -50,6 +50,9 @@ class Player(Object):
         if self.inventory.open:
             self.inventory.closeInventory()
 
+        if self.driver.itemAt(self.x, self.y):
+            self.driver.items[self.x][self.y].onStep()
+
     def setSprite(self, sprite):
         """Sets the players sprite to another. Can be used for animation changes."""
         self.sprite.undraw()
@@ -129,6 +132,9 @@ class Inventory:
 
     def pickupItem(self, item):
         """Adds item to inventory."""
+        if not item.pickup:
+            self.driver.promptBar.displayText("Cannot pickup " + item.name + ".")
+            return None
         if len(self.items) >= self.columns*self.rows:
             self.driver.promptBar.displayText("Cannot pickup " + item.name + ".\n Inventory full.")
             return None

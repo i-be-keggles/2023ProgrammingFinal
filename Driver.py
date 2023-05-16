@@ -1,12 +1,8 @@
-from graphics import*
-from Rendering import*
 import random as random
-from Player import Player
 from Object import *
-from Laser import Laser
-from Lock import Lock
-from Utility import PromptBar
 import numpy as np
+from GameManager import GameManager
+from Utility import PromptBar
 #from pyglet import font
 #font.add_file("Assets/pixel.tff")
 
@@ -14,6 +10,8 @@ import numpy as np
 class Driver:
     """Base class that runs the game."""
     win = GraphWin("Game", TileMap.width * TileMap.tileSize, (TileMap.height + 1) * TileMap.tileSize)
+
+    gameManager = None
 
     curTime = time.time()
     frameRate = 12
@@ -25,9 +23,13 @@ class Driver:
         win.autoflush = False
         frameRate = 24
 
-    def __init__(self):
+    restarting = False
+    promptBar = None
+
+    def __init__(self, gm=None):
         self.map = TileMap(self.win)
-        self.player = Player(4, 0, self.map, self, self.win)
+
+        self.player = None
 
         self.objects = [[None] * TileMap.width for i in range(TileMap.height)]
         self.items = [[None] * TileMap.width for i in range(TileMap.height)]
@@ -41,59 +43,48 @@ class Driver:
                     s = "DirtTile"
                 self.map.setTile(x, y, s)
 
-        for x in range(len(self.objects)):
-            for y in range(len(self.objects[x])):
-                if self.objects[x][y] is not None:
-                    pass
-                    self.objects[x][y].driver = self
+        if self.promptBar is None:
+            self.promptBar = PromptBar(self, self.win)
 
-        Object.instantiate(self.player)
-        Object.instantiate(Object("Box", Point(4, 4), self.map, self.win, "WoodenCrate", Object.crateDescription, True))
-        Object.instantiate(Object("Box", Point(3, 6), self.map, self.win, "WoodenCrate", Object.crateDescription, True))
-        Object.instantiate(Laser("Laser", Point(7, 4), self.map, self.win, Point(-1, 0), "Laser", Object.laserDescription))
-        Object.instantiate(Laser("Laser", Point(2, 7), self.map, self.win, Point(0, -1), "Laser", Object.laserDescription))
-        Object.instantiate(Lock("Lock", Point(0, 3), self.map, self.win, "Lock", Object.lockDescription))
-
-        Item.instantiate(Item("Potion", Point(0, 0), self.map, self.win, "Potion", "Stops you from dying once."))
-        Item.instantiate(Item("Key", Point(5, 6), self.map, self.win, "Key", "Unlocks a barrier."))
-        Item.instantiate(Item("LightningStone", Point(7, 2), self.map, self.win, "LightningStone", "Disables a lightning bolt"))
-
-        #self.player.inventory.pickupItem(Item("Burger", Point(0,0), self.map, self.win, "Burger", "It's a burger."))
-
-        self.promptBar = PromptBar(self, self.win)
-        self.promptBar.displayText("Don't touch the lasers!")
-
-        self.main()
+        if self.gameManager is None:
+            self.gameManager = gm
+            self.gameManager = GameManager(self, self.win)
+            self.gameManager.loadLevel(0, False)
 
     def main(self):
         """Handles main input loop."""
-        while self.win.isOpen():
+        while self.win.isOpen() and not self.restarting:
+
             deltaTime = time.time() - self.curTime
             self.curTime = time.time()
             self.timeToFrame -= deltaTime
 
-            if self.timeToFrame <= 0:
+            if self.timeToFrame <= 0 and self.player is not None:
                 self.timeToFrame = 1 / self.frameRate
 
-                k = self.win.checkKey()
-                if self.promptBar.textField is None or self.promptBar.textField.getText() == "":
-                    if k == "w" or k == "Up":
-                        self.player.move(0, -1)
-                    elif k == "a" or k == "Left":
-                        self.player.move(-1, 0)
-                    elif k == "s" or k == "Down":
-                        self.player.move(0, 1)
-                    elif k == "d" or k == "Right":
-                        self.player.move(1, 0)
-                    elif k == "r":
-                        self.restartLevel()
-                    elif k == "p":
-                        self.win.autoflush = not self.win.autoflush
-                elif k == "Return":
-                    self.tryCommand(self.promptBar.getCommand())
+                if not self.gameManager.narrating:
+                    k = self.win.checkKey()
+                    if self.promptBar.textField is None or self.promptBar.textField.getText() == "":
+                        if k == "w" or k == "Up":
+                            self.player.move(0, -1)
+                        elif k == "a" or k == "Left":
+                            self.player.move(-1, 0)
+                        elif k == "s" or k == "Down":
+                            self.player.move(0, 1)
+                        elif k == "d" or k == "Right":
+                            self.player.move(1, 0)
+                        elif k == "r":
+                            self.restartLevel()
+                        elif k == "p":
+                            self.win.autoflush = not self.win.autoflush
+                    elif k == "Return":
+                        self.tryCommand(self.promptBar.getCommand())
+                    self.update()
+
+                else:
+                    self.gameManager.update()
 
                 self.promptBar.update()
-                self.update()
 
     def update(self):
         """Refreshes graphics."""
@@ -120,7 +111,10 @@ class Driver:
 
     def restartLevel(self):
         #self.win.close()
-        Driver()
+        self.gameManager.loadLevel(self.gameManager.curLevel)
+
+    def newDriver(self, gm):
+        return Driver(gm)
 
     def tryCommand(self, c):
         """Interprets text input."""

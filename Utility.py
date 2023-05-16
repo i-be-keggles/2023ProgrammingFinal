@@ -1,4 +1,5 @@
 from Rendering import *
+import numpy as np
 #from pyglet import font
 #font.add_file("Assets/pixel.tff")
 
@@ -28,24 +29,26 @@ class PromptBar:
         self.text.draw(win)
 
         self.t = Text(Point(self.win.getWidth() - 50, self.win.getHeight() - 10), "enter to continue")
-        self.t = Text(Point(self.win.getWidth() - 50, self.win.getHeight() - 100), "enter to continue")
         self.t.setSize(8)
         self.textStack = []
 
     def update(self):
         """Refreshes graphics."""
-        print(self.textField)
         if self.textField is None:
             if self.win.checkMouse() is not None:
                 if len(self.textStack) == 0:
                     self.text.setText("")
-                    self.t.setText("")
                     self.openField()
                 else:
                     self.textStack.remove(self.textStack[0])
-                    self.displayText(self.textStack)
-                    self.update()
-            self.t.setText("click to continue")
+                    if len(self.textStack) == 0:
+                        self.text.setText("")
+                        self.openField()
+                    else:
+                        self.displayText(self.textStack)
+        self.t.setText(np.where(self.textField is None, "click to continue", "'enter' to input"))
+        self.t.undraw()
+        self.t.draw(self.win)
 
     def getCommand(self):
         """Handles text input."""

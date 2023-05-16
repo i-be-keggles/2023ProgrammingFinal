@@ -65,18 +65,14 @@ class Driver:
                 if not self.gameManager.narrating:
                     k = self.win.checkKey()
                     if self.promptBar.textField is None or self.promptBar.textField.getText() == "":
-                        if k == "w" or k == "Up":
+                        if k == "Up":
                             self.player.move(0, -1)
-                        elif k == "a" or k == "Left":
+                        elif k == "Left":
                             self.player.move(-1, 0)
-                        elif k == "s" or k == "Down":
+                        elif k == "Down":
                             self.player.move(0, 1)
-                        elif k == "d" or k == "Right":
+                        elif k == "Right":
                             self.player.move(1, 0)
-                        elif k == "r":
-                            self.restartLevel()
-                        elif k == "p":
-                            self.win.autoflush = not self.win.autoflush
                     elif k == "Return":
                         self.tryCommand(self.promptBar.getCommand())
                     self.update()
